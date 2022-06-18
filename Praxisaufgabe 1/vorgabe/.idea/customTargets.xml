@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="1948ed7a-d95e-48f8-aafe-b842051a847d" name="test_hrrn_simple" defaultType="MAKE">
+      <configuration id="a1e95bc5-0ef9-4540-86f0-d770101b74e7" name="test_hrrn_simple">
+        <build type="MAKE">
+          <make targetName="test_HRRN_simple" />
+        </build>
+        <clean type="MAKE">
+          <make targetName="clean" />
+        </clean>
+      </configuration>
+    </target>
+    <target id="750c7886-1560-45e4-99d9-83e4196c2ace" name="test_mlf_simple" defaultType="MAKE">
+      <configuration id="da78a860-d77c-4f73-b4fe-dd51535c675b" name="test_mlf_simple">
+        <build type="MAKE">
+          <make targetName="test_MLF_simple" />
+        </build>
+        <clean type="MAKE">
+          <make targetName="clean" />
+        </clean>
+      </configuration>
+    </target>
+  </component>
+</project>

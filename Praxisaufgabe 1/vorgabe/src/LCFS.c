@@ -20,20 +20,20 @@ int addToBeginning(void* new_process, queue_object* queue) {
 
 int LCFS_startup(){
     // TODO
-    LCFS_queue=new_queue();
+    LCFS_queue=new_queue(); //create a new queue
     if (LCFS_queue==NULL){
-        return 1;
+        return 1; //in case it didn't work, return 1
     }
-    return 0;
+    return 0; //otherwise 0
 }
 
 process* LCFS_tick (process* running_process){
     // TODO
-    if (running_process==NULL || running_process->time_left==0){
-        running_process=queue_poll(LCFS_queue);
+    if (running_process==NULL || running_process->time_left==0){ //if there is no running process or the process is done
+        running_process=queue_poll(LCFS_queue); //the next process is polled
     }
-    if (running_process!=NULL){
-        running_process->time_left--;
+    if (running_process!=NULL){ //if the running process exists and isn't finished
+        running_process->time_left--; //the remaining time is decreased
     }
 
     return running_process;
@@ -41,13 +41,13 @@ process* LCFS_tick (process* running_process){
 
 process* LCFS_new_arrival(process* arriving_process, process* running_process){
     // TODO
-    if(arriving_process!=NULL){
-        addToBeginning(arriving_process, LCFS_queue);
+    if(arriving_process!=NULL){ //if the arriving process exists
+        addToBeginning(arriving_process, LCFS_queue); //it gets added to the queue
     }
     return running_process;
 }
 
 void LCFS_finish(){
     // TODO
-    free(LCFS_queue);
+    free_queue(LCFS_queue);
 }

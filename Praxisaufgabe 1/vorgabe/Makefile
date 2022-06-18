@@ -19,7 +19,7 @@ TEST_OBJ = $(addprefix $(BUILD_DIR)/, $(TEST_SRC:%.c=%))
 TEST_TARGET = $(notdir $(TEST_OBJ))
 
 CC = clang
-CC_FLAGS = -Wall -Wextra
+CC_FLAGS = -Wall -Wextra -g
 
 .PHONY: build
 build: $(EXERCISE_OBJ)   # Build the exercise
