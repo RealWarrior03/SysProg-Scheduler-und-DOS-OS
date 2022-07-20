@@ -52,7 +52,7 @@ int main() {
 	my_free(ptr_a);
 	// mem_print_blocks(mem);
 	my_free(ptr_b);
-	// mem_print_blocks(mem);
+    // mem_print_blocks(mem);
 	my_free(ptr_c);
 	// mem_print_blocks(mem);
 

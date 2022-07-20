@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="384f33fc-1a4c-494a-9a3d-7d68f2c71eee" name="test_calloc_alloc" defaultType="MAKE">
+      <configuration id="3e37d4b8-5b3d-4829-bb12-8473e7d9d3e6" name="test_calloc_alloc">
+        <build type="MAKE">
+          <make targetName="test_calloc_alloc" />
+        </build>
+        <clean type="MAKE">
+          <make targetName="clean" />
+        </clean>
+      </configuration>
+    </target>
+    <target id="8b08611a-265b-4d7c-9212-03bef61c52c7" name="test_calloc_complex" defaultType="MAKE">
+      <configuration id="d6e7b41d-5889-4968-81f5-d33e31881da6" name="test_calloc_complex">
+        <build type="MAKE">
+          <make targetName="test_calloc_complex" />
+        </build>
+        <clean type="MAKE">
+          <make targetName="clean" />
+        </clean>
+      </configuration>
+    </target>
+    <target id="43a182e3-6d4c-4c33-82b4-eb2bc908f782" name="test_calloc_oom" defaultType="MAKE">
+      <configuration id="57359269-6de5-4058-baff-b03c7f967c43" name="test_calloc_oom">
+        <build type="MAKE">
+          <make targetName="test_calloc_oom" />
+        </build>
+        <clean type="MAKE">
+          <make targetName="clean" />
+        </clean>
+      </configuration>
+    </target>
+    <target id="835be52d-980c-4e5a-8f87-8190df1fa337" name="test_calloc_simple" defaultType="MAKE">
+      <configuration id="4caf38e5-3169-46e3-8d36-ab1ebd0b4265" name="test_calloc_simple">
+        <build type="MAKE">
+          <make targetName="test_calloc_simple" />
+        </build>
+        <clean type="MAKE">
+          <make targetName="clean" />
+        </clean>
+      </configuration>
+    </target>
+    <target id="2c24237a-587b-4f5a-a8a8-19e67a87f810" name="test_mmu_simple" defaultType="MAKE">
+      <configuration id="006e57ab-0e5b-44bd-b5d9-96b3d474019c" name="test_mmu_simple">
+        <build type="MAKE">
+          <make targetName="test_mmu_simple" />
+        </build>
+        <clean type="MAKE">
+          <make targetName="clean" />
+        </clean>
+      </configuration>
+    </target>
+  </component>
+</project>

@@ -11,14 +11,14 @@ int main() {
 	my_calloc_init(mem, MEM_SIZE);
 
 	// Uncomment to print memory layout
-	// mem_print_blocks(mem);
+	 mem_print_blocks(mem);
 
 	char * ptr = my_calloc(10, 1, 0);
 	char * expected = (((char *) mem) + sizeof(mem_block));
 	printf("Expected: %p\nFound   : %p\n", expected, ptr);
 
 	// Uncomment to print memory layout
-	// mem_print_blocks(mem);
+	 mem_print_blocks(mem);
 
 	if( expected != ptr ) {
 		fprintf(stderr, "Did not match!\n");
