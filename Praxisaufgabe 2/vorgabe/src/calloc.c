@@ -53,13 +53,13 @@ void * my_calloc(size_t nmemb, size_t size, int c) {
             current = current->next;
         } else if (current->size == roundedSize) {
             current->size = current->size|1;
-            memset(current-1, c, roundedSize);
+            memset(current+1, c, roundedSize);
             last_allocation = current;
             return (current + 1);
         } else if (current->size > roundedSize && current->size < roundedSize+sizeof(mem_block)+8) {
             current->size = roundedSize;
             current->size = current->size|1;
-            memset(current-1, c, roundedSize);
+            memset(current+1, c, roundedSize);
             last_allocation = current;
             return (current + 1);
         } else if (current->size > roundedSize) {
@@ -69,7 +69,7 @@ void * my_calloc(size_t nmemb, size_t size, int c) {
             newblock->size = sizeNewBlock;
             current->size = roundedSize;
             current->size = current->size|1;
-            memset(current-1, c, roundedSize);
+            memset(current+1, c, roundedSize);
             current->next = newblock;
             last_allocation = current;
             return (current + 1);
