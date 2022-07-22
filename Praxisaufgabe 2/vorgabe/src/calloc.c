@@ -63,7 +63,9 @@ void * my_calloc(size_t nmemb, size_t size, int c) {
             last_allocation = current;
             return (current + 1);
         } else if (current->size > roundedSize) {
-            newblock = current + sizeof(mem_block) + roundedSize;
+            //newblock = current + 1 + (roundedSize / sizeof(mem_block));
+            char * blockPointer = (char *) current + sizeof(mem_block) + roundedSize;
+            newblock = (mem_block *) blockPointer;
             newblock->prev = current;
             newblock->next = current->next;
             newblock->size = sizeNewBlock;
@@ -73,10 +75,16 @@ void * my_calloc(size_t nmemb, size_t size, int c) {
             current->next = newblock;
             last_allocation = current;
             return (current + 1);
+        } else {
+            current = current->next;
         }
     }
 
-    last_allocation = current;
+    if (current == NULL) {
+        return NULL;
+    }
+
+    last_allocation = current+1;
     return (current + 1);
 }
 
