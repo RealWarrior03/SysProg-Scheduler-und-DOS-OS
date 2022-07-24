@@ -41,51 +41,58 @@ void my_calloc_init(void * mem, size_t mem_size){
 void * my_calloc(size_t nmemb, size_t size, int c) {
 	// TODO
 
-    mem_block *current = last_allocation;
-    mem_block *newblock;
-    unsigned long actualSize = nmemb * size;
-    unsigned long roundedSize = actualSize - actualSize%8 + 8;
-    unsigned long sizeNewBlock;
+    mem_block *current = last_allocation; //position in the chain
+    unsigned long actualSize = nmemb * size; //size the new calloc requests
+    unsigned long roundedSize = actualSize; //set this as the rounded value
+    if (actualSize % 8 != 0) { //and if the "rounded" value isn't %8=0
+        roundedSize = actualSize - actualSize%8 + 8; //than round it up to the next number that is %8=0
+    }
+    int loop = 0; //indicator for the second round
 
-    while (current != NULL) {
-        sizeNewBlock = current->size - roundedSize - sizeof(mem_block);
-        if (current->size % 2 == 1) {
-            current = current->next;
-        } else if (current->size == roundedSize) {
-            current->size = current->size|1;
-            memset(current+1, c, roundedSize);
-            last_allocation = current;
-            return (current + 1);
-        } else if (current->size > roundedSize && current->size < roundedSize+sizeof(mem_block)+8) {
-            current->size = roundedSize;
-            current->size = current->size|1;
-            memset(current+1, c, roundedSize);
-            last_allocation = current;
-            return (current + 1);
-        } else if (current->size > roundedSize) {
-            //newblock = current + 1 + (roundedSize / sizeof(mem_block));
-            char * blockPointer = (char *) current + sizeof(mem_block) + roundedSize;
-            newblock = (mem_block *) blockPointer;
-            newblock->prev = current;
-            newblock->next = current->next;
-            newblock->size = sizeNewBlock;
-            current->size = roundedSize;
-            current->size = current->size|1;
-            memset(current+1, c, roundedSize);
-            current->next = newblock;
-            last_allocation = current;
-            return (current + 1);
-        } else {
-            current = current->next;
+    while (current != last_allocation || loop == 0) {
+        if (current->size % 2 == 0) { //only check the capacity, if the current block is free
+            if (current->size == roundedSize) { //capacity fits perfectly
+                current->size = current->size|1; //mark as used
+                memset(current+1, c, roundedSize); //fill storage
+                last_allocation = current; //mark last_allocation
+                return (current + 1); //return
+            } else if (current->size > roundedSize && current->size < roundedSize+sizeof(mem_block)+8) { //capacity is just a little bit too big
+                current->size = roundedSize; //set
+                current->size = current->size|1; //mark as used
+                memset(current+1, c, roundedSize); //fill storage
+                last_allocation = current; //mark last_allocation
+                return (current + 1); //return
+            } else if (current->size >= roundedSize+sizeof(mem_block)+8) { //capacity is larger; block needs to be split into two
+                unsigned long sizeNewBlock = current->size - roundedSize - sizeof(mem_block); //get the size for the new block
+                char * blockPointer = (char *) current + sizeof(mem_block) + roundedSize; //create the new block
+                mem_block *newblock = (mem_block *) blockPointer; //mark its pointer as a mem_block
+                newblock->prev = current; //put it behind current
+                newblock->next = current->next; //and mark the next block
+                if (newblock->next != NULL) { //if there is a following block
+                    newblock->next->prev = newblock; //set its previous pointer to the new block
+                }
+                newblock->size = sizeNewBlock; //set the size to the calculated one
+                if ((newblock->size & 1) == 1) { //if the new block for some reason is used
+                    newblock->size--; //mark it as free
+                }
+                current->size = roundedSize; //change the size of the current block
+                current->size = current->size|1; //and mark it as used
+                memset(current+1, c, roundedSize); //fill storage
+                current->next = newblock; //and set the new block as the next after current
+                last_allocation = current; //mark last_allocation
+                return (current + 1); //return
+            }
+        }
+
+        if (current->next != NULL) { //if there is another block coming
+            current = current->next; //move there
+        } else { //otherwise
+            current = MEM; //move to the beginning
+            loop = 1; //and mark it for the loop
         }
     }
 
-    if (current == NULL) {
-        return NULL;
-    }
-
-    last_allocation = current+1;
-    return (current + 1);
+    return NULL;
 }
 
 void my_free(void *ptr){
@@ -95,41 +102,31 @@ void my_free(void *ptr){
     mem_block *next = current->next;
     mem_block *prev = current->prev;
 
-    if (current->size % 2 == 1) {
+    if ((current->size & 1) == 1) { //if the block is marked as used, set it as free
         current->size--;
-        if (last_allocation == current) {
-            last_allocation = prev;
+    }
+    if (next != NULL) { //if the next block exists
+        if ((next->size & 1) == 0) { //and is free
+            if (last_allocation == next) { //if its the last_allocation
+                last_allocation = current; //move it to current
+            }
+            current->size += next->size + sizeof(mem_block); //expand the current size
+            if (next->next != NULL) { //if the next of next exists
+                next->next->prev = current; //mark current as its prev
+            }
+            current->next = next->next; //and mark next->next as the next of current
         }
     }
-
-    if (next != NULL && next->size % 2 == 0 && next->size != 0) {
-        current->size += next->size + sizeof(mem_block);
-        current->next = next->next;
-        if (last_allocation == next) {
-            last_allocation = current;
-        }
-        if (next->next != NULL) {
-            if (next->next->prev != NULL) {
-                next->next->prev = current;
+    if (prev != NULL) { //if prev exists
+        if ((prev->size & 1) == 0) { //and is free
+            if (last_allocation == current) { //if current is the last_allocation
+                last_allocation = prev; //set it to prev
+            }
+            prev->size += current->size + sizeof(mem_block); //extend prev size
+            prev->next = current->next; //move the next pointer
+            if (current->next != NULL) { //if there is a next after current
+                current->next->prev = prev; //set its prev to prev
             }
         }
-        next->size = 0;
-        next->prev = NULL;
-        next->next = NULL;
-    }
-    if (prev != NULL && prev->size % 2 == 0 && prev->size != 0) {
-        prev->size += current->size + sizeof(mem_block);
-        prev->next = current->next;
-        if (last_allocation == current) {
-            last_allocation = prev;
-        }
-        if (current->next != NULL) {
-            if (current->next->prev != NULL) {
-                current->next->prev = prev;
-            }
-        }
-        current->size = 0;
-        current->prev = NULL;
-        current->next = NULL;
     }
 }
